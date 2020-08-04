@@ -1,6 +1,7 @@
 package edu360.day7
 
-import cn.edu360.day4.MyUtils
+
+import edu360.day4.MyUtils
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.sql.{DataFrame, Dataset, SparkSession}
 

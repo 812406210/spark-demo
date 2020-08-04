@@ -1,6 +1,6 @@
 package edu360.day10
 
-import cn.edu360.day4.MyUtils
+
 import kafka.common.TopicAndPartition
 import kafka.message.MessageAndMetadata
 import kafka.serializer.StringDecoder
