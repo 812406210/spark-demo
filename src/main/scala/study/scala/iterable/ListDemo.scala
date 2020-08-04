@@ -38,6 +38,10 @@ object ListDemo {
     val slice: List[Int] = list.slice(1, list.length).map(_ * 10)
     println(s"slice=${slice}")
 
+    val count: Int = list.count(x => x > 2)
+    println(s"count=${count}")
+
+
   }
 
 }
