@@ -105,7 +105,7 @@ index可以理解为数据库；type理解为数据表；id相当于数据库表
 
 
 #向store索引中添加一些书籍
-curl -XPUT 'http://192.168.10.16:9200/store/books/1' -d '{
+curl -XPUT 'http://hadoop102:9200/store/books/2' -d '{
   "title": "Elasticsearch: The Definitive Guide",
   "name" : {
     "first" : "Zachary",
@@ -116,14 +116,14 @@ curl -XPUT 'http://192.168.10.16:9200/store/books/1' -d '{
 }'
 
 #在linux中通过curl的方式查询
-curl -XGET 'http://192.168.10.18:9200/store/books/1'
+curl -XGET 'http://hadoop100:9200/store/books/1'
 
 #通过浏览器查询
-http://192.168.10.18:9200/store/books/1
+http://hadoop100:9200/store/books/1
 
 
 #在添加一个书的信息
-curl -XPUT 'http://192.168.10.18:9200/store/books/2' -d '{
+curl -XPUT 'http://hadoop100:9200/store/books/2' -d '{
   "title": "Elasticsearch Blueprints",
   "name" : {
     "first" : "Vineeth",
@@ -135,7 +135,7 @@ curl -XPUT 'http://192.168.10.18:9200/store/books/2' -d '{
 
 
 # 通过ID获得文档信息
-curl -XGET 'http://192.168.10.18:9200/store/books/1'
+curl -XGET 'http://hadoop100:9200/store/books/1'
 
 #在浏览器中查看
 http://92.168.10.18:9200/store/books/1
@@ -169,7 +169,7 @@ curl -XGET 'http://192.168.10.16:9200/store/books/1'
 curl -XDELETE 'http://192.168.10.16:9200/store/books/1'
 
 
-curl -XPUT 'http://192.168.10.16:9200/store/books/4' -d '{
+curl -XPUT 'http://hadoop100:9200/store/books/4' -d '{
   "title": "Elasticsearch: The Definitive Guide",
   "author": "Guide",
   "publish_date":"2016-02-06",
@@ -182,7 +182,7 @@ curl -XPUT 'http://192.168.10.16:9200/store/books/4' -d '{
 # SELECT * FROM books WHERE price = 35.99
 # filtered 查询价格是35.99的
 # 返回的的分是1.0
-curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
+curl -XGET 'http://hadoop100:9200/store/books/_search' -d '{
   "query": {
     "bool": {
       "must": {
@@ -198,7 +198,7 @@ curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
 }'
 
 # 返回的的分是1.0
-curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
+curl -XGET 'http://hadoop100:9200/store/books/_search' -d '{
   "query": {
     "constant_score": {
       "filter": {
@@ -211,7 +211,7 @@ curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
 }'
 
 # 返回的的分是0.0
-curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
+curl -XGET 'http://hadoop100:9200/store/books/_search' -d '{
     "query": {
         "bool": {
            "filter" : {
@@ -224,7 +224,7 @@ curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
 }'
 
 #指定多个值
-curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
+curl -XGET 'http://hadoop100:9200/store/books/_search' -d '{
     "query" : {
         "bool" : {
             "filter" : {
@@ -236,7 +236,7 @@ curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
     }
 }'
 
-curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
+curl -XGET 'http://hadoop100:9200/store/books/_search' -d '{
     "query" : {
         "bool" : {
             "must": {
@@ -253,7 +253,7 @@ curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
 
 
 # SELECT * FROM books WHERE publish_date = "2015-02-06"
-curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
+curl -XGET 'http://hadoop100:9200/store/books/_search' -d '{
   "query" : {
     "bool" : {
         "filter" : {
@@ -281,7 +281,7 @@ curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
 # should: 条件可以满足也可以不满足，相当于 or
 # must_not: 条件不需要满足，相当于 not
 
-curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
+curl -XGET 'http://hadoop100:9200/store/books/_search' -d '{
   "query" : {
     "bool" : {
       "should" : [
@@ -299,7 +299,7 @@ curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
 # 嵌套查询
 # SELECT * FROM books WHERE price = 35.99 OR ( publish_date = "2016-02-06" AND price = 99.99 )
 
-curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
+curl -XGET 'http://hadoop100:9200/store/books/_search' -d '{
     "query": {
         "bool": {
             "should": [
@@ -336,7 +336,7 @@ curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
 # gte :  >= 大于等于
 # lte :  <= 小于等于
 
-curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
+curl -XGET 'http://hadoop100:9200/store/books/_search' -d '{
     "query": {
         "range" : {
             "price" : {
@@ -348,7 +348,7 @@ curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
 }
 
 #name和author都必须包含Guide，并且价钱等于33.99或者188.99
-curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
+curl -XGET 'http://hadoop100:9200/store/books/_search' -d '{
     "query": {
         "bool": {
             "must": {
@@ -375,6 +375,6 @@ curl -XGET 'http://192.168.10.16:9200/store/books/_search' -d '{
 
 
 
-http://192.168.10.16:9200/store/books/_search
+http://hadoop100:9200/store/books/_search
 
 
