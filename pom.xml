@@ -17,7 +17,7 @@
         <encoding>UTF-8</encoding>
         <akka.version>2.4.17</akka.version>
         <scala.compat.version>2.11</scala.compat.version>
-        <lucene.version>6.5.1</lucene.version>
+        <lucene.version>8.6.1</lucene.version>
     </properties>
 
     <dependencies>
