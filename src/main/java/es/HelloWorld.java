@@ -16,7 +16,6 @@ public class HelloWorld {
     public static void main(String[] args) {
 
         try {
-
             //设置集群名称
             Settings settings = Settings.builder()
                     .put("cluster.name", "bigdata")

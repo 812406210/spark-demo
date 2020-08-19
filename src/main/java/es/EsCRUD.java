@@ -68,13 +68,11 @@ public class EsCRUD {
                 new InetSocketTransportAddress(InetAddress.getByName("192.168.33.100"), 9300),
                 new InetSocketTransportAddress(InetAddress.getByName("192.168.33.101"), 9300),
                 new InetSocketTransportAddress(InetAddress.getByName("192.168.33.102"), 9300));
-
     }
 
 
     @Test
     public void testCreate() throws IOException {
-
         IndexResponse response = client.prepareIndex("gamelog", "users", "1")
                 .setSource(
                         jsonBuilder()
