@@ -51,7 +51,7 @@ public class IKAnalzyerDemo {
 		TokenStream ts = null;
 		try {
 			ts = analyzer.tokenStream("myfield",
-					new StringReader("中华人民共和国和诛仙，都是我国的,小牛学堂"));
+					new StringReader("中华人民共和国和诛仙，都是我国的,小牛学堂,I am a student"));
 			// 获取词元位置属性
 			OffsetAttribute offset = ts.addAttribute(OffsetAttribute.class);
 			// 获取词元文本属性

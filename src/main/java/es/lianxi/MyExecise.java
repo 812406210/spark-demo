@@ -12,6 +12,7 @@ import org.elasticsearch.common.settings.Setting;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.discovery.zen.ZenDiscovery;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -156,4 +157,10 @@ public class MyExecise {
      * match：全文搜索, 通常用于对text类型字段的查询,会对进行查询的文本先进行分词操作
      * term：精确查询,通常用于对keyword和有精确值的字段进行查询,不会对进行查询的文本进行分词操作
      */
+
+    @Test
+    public void testTermGeo() throws IOException {
+
+    }
+
 }

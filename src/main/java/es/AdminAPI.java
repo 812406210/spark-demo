@@ -1,20 +1,31 @@
 package es;
 
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
+import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.AdminClient;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+
+import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 public class AdminAPI {
 
@@ -204,4 +215,96 @@ public class AdminAPI {
         prepareCreate.setSettings(settings_map).addMapping("player", builder).get();
 
     }
+
+    //https://blog.csdn.net/wuzhiwei549/article/details/80537753
+    @Test
+    public void testSettingsMappingsGeo() throws IOException {
+        //1:settings
+        HashMap<String, Object> settings_map = new HashMap<String, Object>(2);
+        settings_map.put("number_of_shards", 3);
+        settings_map.put("number_of_replicas", 2);
+
+        //2:mappings（映射、schema）
+        XContentBuilder builder = XContentFactory.jsonBuilder()
+                .startObject()
+                .field("dynamic", "true")
+                //设置type中的属性
+                .startObject("properties")
+                //.startObject("pin")
+               // .startObject("properties")
+                .startObject("location")
+                    .field("type","geo_point")
+                .endObject()
+               // .endObject()
+               // .endObject()
+                .endObject()
+                .endObject();
+
+        CreateIndexRequestBuilder prepareCreate = client.admin().indices().prepareCreate("carshop");
+        //管理索引（user_info）然后关联type（user）
+        prepareCreate.setSettings(settings_map).addMapping("shop", builder).get();
+    }
+
+
+    @Test
+    public void testCreateGeo() throws IOException {
+        List<GeoPoint> points = new ArrayList<>();
+        points.add(new GeoPoint(40.12, -71.34));
+        IndexResponse response = client.prepareIndex("carshop", "shop", "2")
+                .setSource(
+                        jsonBuilder()
+                                .startObject()
+                                .field("name", "上海顺丰宝马4S店")
+                                .field("location", points)
+                                .endObject()
+                ).get();
+    }
+
+    @Test
+    public void testQueryGeo() throws IOException {
+        //第一个需求：搜索两个坐标点组成的一个区域
+        SearchResponse searchResponse = client.prepareSearch("carshop")
+                .setTypes("shop")
+                .setQuery(QueryBuilders.geoBoundingBoxQuery("location")
+                        .setCorners(40.73, -74.1, 40.01, -71.12))
+                .get();
+
+        for(SearchHit searchHit : searchResponse.getHits().getHits()) {
+            System.out.println(searchHit.getSourceAsString());
+        }
+        System.out.println("======================================================");
+
+        //第二个需求：指定一个区域，由三个坐标点，组成，比如上海大厦，东方明珠塔，上海火车站
+        List<GeoPoint> points = new ArrayList<>();
+        points.add(new GeoPoint(40.73, -74.1));
+        points.add(new GeoPoint(40.01, -71.12));
+        points.add(new GeoPoint(50.56, -90.58));
+
+        searchResponse = client.prepareSearch("carshop")
+                .setTypes("shop")
+                .setQuery(QueryBuilders.geoPolygonQuery("location", points))
+                .get();
+
+        for(SearchHit searchHit : searchResponse.getHits().getHits()) {
+            System.out.println(searchHit.getSourceAsString());
+        }
+
+        System.out.println("====================================================");
+
+        //第三个需求：搜索距离当前位置在200公里内的4s店
+        searchResponse = client.prepareSearch("carshop")
+                .setTypes("shop")
+                .setQuery(QueryBuilders.geoDistanceQuery("location")
+                        .point(40, -70)
+                        .distance(200, DistanceUnit.KILOMETERS))
+                .get();
+
+        for(SearchHit searchHit : searchResponse.getHits().getHits()) {
+            System.out.println(searchHit.getSourceAsString());
+        }
+
+        client.close();
+    }
+
 }
+
